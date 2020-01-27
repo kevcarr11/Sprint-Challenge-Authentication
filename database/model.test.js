@@ -26,7 +26,6 @@ describe("model", () => {
     const user = { username: "Kevin", password: "abc123" } 
     const res = await usersModel.findBy(user)
     expect(res.username).toMatch(/kevin/i)
-    
+  
   })
-
 })

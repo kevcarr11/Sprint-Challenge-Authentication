@@ -4,12 +4,11 @@ const bcrypt = require('bcryptjs')
 
 const router = require('express').Router();
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
   try {
     const saved = await usersModel.add(req.body)
-    const token = signToken(saved)
+    // const token = signToken(saved)
     res.status(201).json({
-      token,
       saved,
     })
   } catch (err) {
@@ -17,7 +16,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
     let {username, password} = req.body
     let user = await usersModel.findBy({ username })
