@@ -7,14 +7,44 @@ const router = require('express').Router();
 router.post('/register', async (req, res) => {
   try {
     const saved = await usersModel.add(req.body)
-    
+    const token = signToken(saved)
+    res.status(201).json({
+      token,
+      saved,
+    })
   } catch (err) {
     next(err)
   }
 });
 
-router.post('/login', (req, res) => {
-  // implement login
+router.post('/login', async (req, res) => {
+  try {
+    let {username, password} = req.body
+    let user = await usersModel.findBy({ username })
+
+    if (!user || !password) {
+      return res.status(401).json({
+        message: "Invalid Credentials - Please try again"
+      })
+    }
+
+    const passwordValid = await bcrypt.compare(password, user.password)
+    if (!passwordValid) {
+      return res.status(401).json({
+        message: "Invalid Credentials - Please try again"
+      })
+    }
+
+    if(user && passwordValid) {
+      const token = signToken(user)
+      res.status(200).json({
+        message: `Welcome ${user.username}`,
+        token,
+      })
+    }
+  } catch (err) {
+    next(err)
+  }
 });
 
 function signToken(user) {
@@ -30,8 +60,6 @@ function signToken(user) {
 
   return jwt.sign(payload, secret, options)
 }
-
-
 
 
 module.exports = router;
