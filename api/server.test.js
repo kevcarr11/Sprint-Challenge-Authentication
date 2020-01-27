@@ -3,7 +3,7 @@ const server = require("./server")
 
 
 describe("register users route", () => {
-  
+
   test("register bevis", async () => {
     const res = await supertest(server)
       .post("/api/auth/register")
@@ -61,5 +61,6 @@ describe("jokes route", () => {
       .set("Authorization", token) 
     expect(res.status).toBe(200)
     expect(res.type).toBe("application/json")
+    expect(res.body.length).toBe(20) 
   })
 })
